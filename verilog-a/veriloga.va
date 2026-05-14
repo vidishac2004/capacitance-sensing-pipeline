@@ -1,0 +1,30 @@
+// VerilogA for cap_measure, freq_counter_v1, VerilogA
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module freq_counter_v1(signal,gnd, count_out);
+
+       input signal;
+       electrical signal;
+       input gnd;
+       electrical gnd;
+       output [7:0] count_out;
+       electrical [7:0] count_out;
+
+	   integer count;
+       analog begin
+			@(initial_step) count=0;
+             @(cross(V(signal)-0.5,1))
+                    count=count+1;
+             generate j(0,7) begin
+                    V(count_out[j], gnd) <+ transition(
+                         ((count >> (7-j)) & 1)*1.0,
+                         j*100p,
+                         10p,
+                         10p                      
+                   );
+             end
+       end
+
+endmodule
